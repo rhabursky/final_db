@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ program.title }}</h2>
+    <p><strong>Degree Type:</strong> {{ program.degree_type }}</p>
+    <p><strong>Minor:</strong> {{ minor_value }}</p>
+    <button class="button-green" id="show-money">Show Me The Money</button>
+    <div class="salary-box" id="salary-box">
+        Average Salary: {{ salary_value }}
+        <div class="source-degree">Source: {{ source_degree }}</div>
+    </div>
+</div>
+<div class="card">
+    <a href="/">← Back to programs</a>
+</div>
+<script>
+    document.getElementById('show-money').addEventListener('click', function() {
+        document.getElementById('salary-box').style.display = 'block';
+        this.style.display = 'none';
+    });
+</script>
+{% endblock %}

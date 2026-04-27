@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>All Programs</h2>
+    <p>Click a program to see its degree details and salary information.</p>
+    <div>
+        {% for program in programs %}
+            <a class="program-link" href="/program/{{ program.id }}">{{ program.title }}</a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ conn = sqlite3.connect('mercyhurst_courses.db')
 cursor = conn.cursor()
 
 # Read and execute the SQL file
-with open('mercyhurst_courses_fixed.sql', 'r') as sql_file:
+with open('mercyhurst_courses.sql', 'r') as sql_file:
     sql_script = sql_file.read()
 
 cursor.executescript(sql_script)
