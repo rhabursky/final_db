@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Mercyhurst to The Real World 💰</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fb;
+            color: #1a202c;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        h1 {
+            font-size: 2.4rem;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        a.program-link {
+            color: #2d3748;
+            text-decoration: none;
+            display: block;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        a.program-link:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+        .button-green {
+            background-color: #2f855a;
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.18);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .button-green:hover {
+            background-color: #276749;
+            transform: translateY(-1px);
+        }
+        .salary-box {
+            display: none;
+            margin-top: 22px;
+            padding: 18px;
+            background: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 14px;
+            color: #22543d;
+            font-weight: 700;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #718096;
+            font-size: 0.95rem;
+        }
+        .source-degree {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Mercyhurst to The Real World 💰</h1>
+            
+        </header>
+        
+    <div class="card">
+        <h2>Hospitality Management</h2>
+        <p><strong>Degree Type:</strong> Bachelor's Degree (4-Year)</p>
+        <p><strong>Minor:</strong> no</p>
+        <button class="button-green" onclick="showSalary()">Show Me The Money</button>
+        <div class="salary-box" id="salary-box" style="display: none;">
+            Average Salary: $64k
+            <div class="source-degree">Source: Bachelor of Science (BS / BSc), Hospitality Management</div>
+        </div>
+    </div>
+    <div class="card">
+        <a href="../index.html">← Back to programs</a>
+    </div>
+    <script>
+        function showSalary() {
+            document.getElementById('salary-box').style.display = 'block';
+            event.target.style.display = 'none';
+        }
+    </script>
+    
+        <div class="footer">
+            Built with data from Mercyhurst and Payscale.
+        </div>
+    </div>
+</body>
+</html>
