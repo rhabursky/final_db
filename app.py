@@ -1,9 +1,10 @@
 import os
-import sqlite3
+from typing import Optional
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
@@ -12,19 +13,31 @@ PAGE_TITLE = '📚 Mercyhurst to The Real World 💰'
 PAGE_SUBTITLE = 'Click a program to view its degree type, minor status, and salary.'
 
 templates = Jinja2Templates(directory='templates')
+engine = create_engine(f'sqlite:///{DATABASE}', echo=False, connect_args={'check_same_thread': False})
 
 
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
+class Course(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    degree_type: Optional[str] = None
+    minor: Optional[str] = None
+
+
+class Salary(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    title: str
+    average_salary: Optional[str] = None
+    source_degree: Optional[str] = None
+
+
+def get_session() -> Session:
+    return Session(engine)
 
 
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
-    conn = get_db_connection()
-    programs = conn.execute('SELECT id, title FROM courses ORDER BY title').fetchall()
-    conn.close()
+    with get_session() as session:
+        programs = session.exec(select(Course).order_by(Course.title)).all()
     return templates.TemplateResponse(
         'index.html',
         {
@@ -38,21 +51,16 @@ async def index(request: Request):
 
 @app.get('/program/{program_id}', response_class=HTMLResponse)
 async def program_detail(request: Request, program_id: int):
-    conn = get_db_connection()
-    program = conn.execute(
-        'SELECT c.id, c.title, c.degree_type, c.minor, s.average_salary, s.source_degree '
-        'FROM courses c LEFT JOIN salaries s ON c.id = s.id '
-        'WHERE c.id = ?',
-        (program_id,),
-    ).fetchone()
-    conn.close()
+    with get_session() as session:
+        program = session.get(Course, program_id)
+        salary = session.get(Salary, program_id)
 
     if program is None:
         raise HTTPException(status_code=404, detail='Program not found')
 
-    minor_value = 'yes' if program['minor'] == 'yes' else 'no'
-    salary_value = program['average_salary'] if program['average_salary'] else 'N/A'
-    source_degree = program['source_degree'] if program['source_degree'] else 'No source available'
+    minor_value = 'yes' if program.minor == 'yes' else 'no'
+    salary_value = salary.average_salary if salary and salary.average_salary else 'N/A'
+    source_degree = salary.source_degree if salary and salary.source_degree else 'No source available'
 
     return templates.TemplateResponse(
         'program_detail.html',
