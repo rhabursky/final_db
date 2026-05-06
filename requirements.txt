@@ -1,4 +1,4 @@
-Flask>=2.0
+fastapi>=0.111.0
+uvicorn>=0.26.0
 beautifulsoup4>=4.0
 requests>=2.0
-gunicorn
