@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📚 Mercyhurst to The Real World 💰</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Mercyhurst to The Real World 💰</h1>
+            <p>Click a program to view its degree details and salary information.</p>
+        </header>
+
+        <section class="layout">
+            <aside class="program-list card">
+                <h2>All Programs</h2>
+                <div id="programs"></div>
+            </aside>
+
+            <main class="program-detail card">
+                <div id="detail-empty" class="empty-state">
+                    Select a program to see details.
+                </div>
+                <div id="program-detail" class="detail-content hidden">
+                    <h2 id="program-title"></h2>
+                    <p><strong>Degree Type:</strong> <span id="degree-type"></span></p>
+                    <p><strong>Minor:</strong> <span id="minor"></span></p>
+                    <button class="button-green" id="show-money">Show Me The Money</button>
+                    <div class="salary-box hidden" id="salary-box">
+                        <div><strong>Average Salary:</strong> <span id="salary-value"></span></div>
+                        <div class="source-degree"><strong>Source:</strong> <span id="source-degree"></span></div>
+                    </div>
+                    <button class="button-secondary" id="clear-selection">Back to list</button>
+                </div>
+            </main>
+        </section>
+
+        <footer class="footer">
+            Built with data from Mercyhurst and Payscale.
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
