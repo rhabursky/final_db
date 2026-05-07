@@ -1,18 +1,17 @@
 import os
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
 DATABASE = 'mercyhurst_courses.db'
-PAGE_TITLE = '📚 Mercyhurst to The Real World 💰'
-PAGE_SUBTITLE = 'Click a program to view its degree type, minor status, and salary.'
 
-templates = Jinja2Templates(directory='templates')
+# Mount static files
+app.mount('/static', StaticFiles(directory='static'), name='static')
+
 engine = create_engine(f'sqlite:///{DATABASE}', echo=False, connect_args={'check_same_thread': False})
 
 
@@ -34,19 +33,41 @@ def get_session() -> Session:
     return Session(engine)
 
 
-@app.get('/', response_class=HTMLResponse)
-async def index(request: Request):
+@app.get('/')
+async def serve_index():
+    return FileResponse('static/index.html')
+
+
+@app.get('/api/programs')
+async def list_programs():
     with get_session() as session:
         programs = session.exec(select(Course).order_by(Course.title)).all()
-    return templates.TemplateResponse(
-        'index.html',
-        {
-            'request': request,
-            'programs': programs,
-            'title': PAGE_TITLE,
-            'subtitle': PAGE_SUBTITLE,
-        },
-    )
+    return [{'id': program.id, 'title': program.title} for program in programs]
+
+
+@app.get('/api/programs/{program_id}')
+async def get_program(program_id: int):
+    with get_session() as session:
+        program = session.get(Course, program_id)
+        salary = session.get(Salary, program_id)
+
+    if program is None:
+        raise HTTPException(status_code=404, detail='Program not found')
+
+    return {
+        'id': program.id,
+        'title': program.title,
+        'degree_type': program.degree_type,
+        'minor': program.minor,
+        'average_salary': salary.average_salary if salary else None,
+        'source_degree': salary.source_degree if salary else None,
+    }
+
+
+if __name__ == '__main__':
+    import uvicorn
+
+    uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
 
 @app.get('/program/{program_id}', response_class=HTMLResponse)
